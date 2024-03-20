@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model child {
+  id             BigInt         @id @default(autoincrement())
+  created        DateTime       @db.Timestamptz(6)
+  modified       DateTime       @db.Timestamptz(6)
+  title          String         @db.VarChar(64)
+  json_field     Json
+  long_text      String
+  parent_id      BigInt
+  parent parent @relation(fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "testapp_child_parent_id_d4ea84ec_fk_testapp_parent_id")
+
+  @@index([parent_id], map: "testapp_child_parent_id_d4ea84ec")
+  @@map("testapp_child")
+}
+
+model parent {
+  id            BigInt          @id @default(autoincrement())
+  title         String          @db.VarChar(64)
+  description   String
+  created       DateTime        @db.Timestamptz(6)
+  modified      DateTime        @db.Timestamptz(6)
+  child child[]
+  @@map("testapp_parent")
+}
