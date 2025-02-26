@@ -1,0 +1,16 @@
+{% block content %}
+    {% if user.is_authenticated %}
+        <p>Logged in as {{ user }}</p>
+        <p>Session count: {{ session_count }}</p>
+        <form method="post" action="{% url 'logout_view' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    {% else %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Login</button>
+        </form>
+    {% endif %}
+{% endblock %}
